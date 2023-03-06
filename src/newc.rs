@@ -5,6 +5,7 @@ use std::io::{self, Read, Write};
 const HEADER_LEN: usize = 110;
 
 const MAGIC_NUMBER: &[u8] = b"070701";
+const MAGIC_NUMBER_CRC: &[u8] = b"070702";
 
 const TRAILER_NAME: &str = "TRAILER!!!";
 
@@ -148,7 +149,7 @@ impl<R: Read> Reader<R> {
         // char    c_magic[6];
         let mut magic = [0u8; 6];
         inner.read_exact(&mut magic)?;
-        if magic != MAGIC_NUMBER {
+        if magic != MAGIC_NUMBER && magic != MAGIC_NUMBER_CRC {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
                 "Invalid magic number",
